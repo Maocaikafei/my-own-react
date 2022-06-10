@@ -89,8 +89,6 @@ function reconcileChildren(wipFiber, elements) {
     let prevSibling = null;
 
     while (index < elements.length || (oldFiber !== null && oldFiber !== undefined)) {
-        console.log('index',index)
-        console.log('oldFiber', oldFiber)
         const element = elements[index];
         let newFiber = null;
 
@@ -158,7 +156,6 @@ function performUnitOfWork(fiber) {
     }
     let nextFiber = fiber;
     while (nextFiber) {
-        console.log('nextFiber', nextFiber);
         if (nextFiber.sibling) {
             return nextFiber.sibling;
         }
@@ -179,7 +176,6 @@ function updateFunctionComponent(fiber) {
   wipFiber.hooks = []; // hook数组，用于支持在同一个组件中多次调用hook
   // 这一步也是将hooks数组与fiber节点关联起来
 
-  console.log('fiber.type', fiber.type);
   // 这里是执行function方法并获取其返回值，作为该function节点的孩子
   const children = [fiber.type(fiber.props)]
    reconcileChildren(fiber, children)
@@ -199,6 +195,7 @@ function updateFunctionComponent(fiber) {
 
     const actions = oldHook ? oldHook.queue : [];
     actions.forEach(action => {
+        console.log('action', initial)
         if (typeof action === 'function') {
             hook.state = action(hook.state)
         } else {
@@ -277,7 +274,7 @@ function workLoop(deadline) {
         // 开始render阶段
         nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
         // 判断是否有剩余时间
-        shouldYield = deadline.timeRemaining() < 1;
+        shouldYield = deadline.timeRemaining() < 3;
     }
 
     // 当没有下一个Fiber节点时，此时每个虚拟dom都有对应的fiber节点了，且都有增删改标识，进入同步的commit阶段
